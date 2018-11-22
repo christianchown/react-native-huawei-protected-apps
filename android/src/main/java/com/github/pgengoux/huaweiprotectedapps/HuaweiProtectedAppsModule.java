@@ -51,10 +51,7 @@ public class HuaweiProtectedAppsModule extends ReactContextBaseJavaModule implem
             // Show dialog only when "do not show again" hasn't been enabled yet
             if (!skipMessage) {
                 final SharedPreferences.Editor editor = settings.edit();
-                Intent intent = new Intent();
                 // Check if intent of the Huawei protected apps activity is callable
-                intent.setClassName("com.huawei.systemmanager", "com.huawei.systemmanager.optimize.process.ProtectActivity");
-                if (isCallable(intent)) {
                     // Prepare dialog
                     final AppCompatCheckBox dontShowAgain = new AppCompatCheckBox(this.getCurrentActivity());
                     dontShowAgain.setText(dontShowAgainText);
@@ -84,11 +81,6 @@ public class HuaweiProtectedAppsModule extends ReactContextBaseJavaModule implem
                             })
                             .setNegativeButton(negativeText, null)
                             .show();
-                } else {
-                    // Save "do not show again" flag automatically for non-Huawei devices to prevent unnecessary checks
-                    editor.putBoolean(saveIfSkip, true);
-                    editor.apply();
-                }
             }
         }
     }
@@ -100,16 +92,6 @@ public class HuaweiProtectedAppsModule extends ReactContextBaseJavaModule implem
     }
 
     private void huaweiProtectedApps() {
-        try {
-
-            String cmd = "am start -n com.huawei.systemmanager/.optimize.process.ProtectActivity";
-            // append user serial to start command as Android >=JellyBean has become multi user
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                cmd += " --user " + getUserSerial();
-            }
-            Runtime.getRuntime().exec(cmd);
-        } catch (IOException ignored) {
-        }
     }
 
     private String getUserSerial() {
